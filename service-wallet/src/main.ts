@@ -1,8 +1,16 @@
 import { NestFactory } from '@nestjs/core';
+import * as helmet from 'helmet';
+
 import { AppModule } from './app.module';
+import { AppConfigService } from './config/app/config.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+
+  app.setGlobalPrefix('api');
+  app.use(helmet());
+
+  const appConfig: AppConfigService = app.get('AppConfigService');
+  await app.listen(appConfig.port || 3020);
 }
 bootstrap();
